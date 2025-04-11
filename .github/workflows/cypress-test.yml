@@ -1,0 +1,72 @@
+name: Test Suite Cypress
+
+on:
+  schedule:
+  - cron: '0 21 * * *'
+    timezone: Pacific/Auckland
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create folders for artifacts and results
+        run: |
+          mkdir -p cypress/artifacts/{videos,screenshots}
+          mkdir -p allure-results
+
+      - name: Run tests with Allure
+        id: tests 
+        run: npm run test:ci
+        env:
+          CYPRESS_EMAIL: ${{ secrets.CYPRESS_EMAIL }}
+          CYPRESS_PASSWORD: ${{ secrets.CYPRESS_PASSWORD }}
+          CYPRESS_BASE_URL: ${{ secrets.CYPRESS_BASE_URL }}
+
+      - name: Check Allure results
+        run: ls -la allure-results
+
+      - name: Generate Allure Report
+        if: always()  
+        run: npm run allure:generate
+
+      - name: Upload failure evidence
+        if: failure()  
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-failure-evidence
+          path: |
+            cypress/artifacts/screenshots
+            cypress/artifacts/videos
+
+      - name: Upload Allure Report
+        if: always()  
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report
+          retention-days: 3
+
+      - name: Deploy to GitHub Pages
+        if: always() 
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-report

@@ -1,0 +1,28 @@
+# Node.js
+node_modules/
+
+# Cypress automatically generated files
+cypress/artifacts/
+cypress/videos/
+cypress/screenshots/
+
+# Test reports
+reports/
+mochawesome-report/
+allure-results/
+allure-report/
+
+# System files (macOS, Windows and Linux)
+.DS_Store
+Thumbs.db
+
+# Logs e caches
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+cypress/logs/
+*.log
+
+# Local configuration files
+.env
+cypress.env.json
