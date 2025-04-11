@@ -29,7 +29,7 @@ This project provides automated UI testing for a financial application using mod
 Allure reports are automatically generated after test runs. You can access them in two ways:
 
 1. **Locally**: After running tests with `npm run allure:open`
-2. **Online**: Visit the <a href="https://josinaldogjunior.github.io/cypress-automation-interface" target="_blank">GitHub Pages site</a> for the latest reports from CI/CD pipeline.
+2. **Online**: Visit the <a href="https://josinaldogjunior.github.io/cypress-automation-web/" target="_blank">GitHub Pages site</a> for the latest reports from CI/CD pipeline.
 
 
 
